@@ -40,6 +40,12 @@ class MessageHandler:
         """Parse received message"""
         try:
             message = json.loads(message_data)
+            # Ensure channel information exists, default to DEFAULT_CHANNEL if missing
+            if 'channel' not in message:
+                message['channel'] = DEFAULT_CHANNEL
+            # Validate channel
+            if message['channel'] not in AVAILABLE_CHANNELS:
+                message['channel'] = DEFAULT_CHANNEL
             return True, message
         except json.JSONDecodeError:
             return False, None
@@ -64,6 +70,8 @@ class MessageHandler:
 
     def store_received_message(self, message):
         """Store received message"""
+        if 'channel' not in message:
+            message['channel'] = DEFAULT_CHANNEL
         self.received_messages.append(message)
         while len(self.received_messages) > 100:  # Keep last 100 messages
             self.received_messages.pop(0)

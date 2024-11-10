@@ -55,7 +55,8 @@ class LoRaRadio:
                         'node': f"SIM_NODE_{random.randint(1,5)}",
                         'content': f"Test message {random.randint(1, 100)}",
                         'timestamp': time.strftime('%Y-%m-%dT%H:%M:%S'),
-                        'type': 'message'
+                        'type': 'message',
+                        'channel': random.choice(AVAILABLE_CHANNELS)  # Add random channel to simulated messages
                     }
                     return True, json.dumps(simulated_message), "Message received"
                 return True, None, "No message"
