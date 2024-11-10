@@ -14,7 +14,3 @@ ACK_TIMEOUT = 2.0       # Timeout for acknowledgment in seconds
 # Application Settings
 NODE_ID = "PI_NODE_1"   # Unique identifier for this node
 RECEIVE_TIMEOUT = 0.1   # Receive timeout in seconds
-
-# Channel Settings
-DEFAULT_CHANNEL = "general"
-AVAILABLE_CHANNELS = ["general", "emergency", "tech", "social"]

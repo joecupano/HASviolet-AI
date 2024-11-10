@@ -6,7 +6,7 @@ import sys
 from radio_manager import LoRaRadio
 from message_handler import MessageHandler
 from user_interface import ChatInterface
-from config import *
+from config import NODE_ID
 
 class LoRaChat:
     def __init__(self):
@@ -58,34 +58,9 @@ class LoRaChat:
                     'node': NODE_ID,
                     'content': f"Radio Status: {'Connected' if self.radio.is_initialized else 'Disconnected'}",
                     'timestamp': time.strftime('%Y-%m-%dT%H:%M:%S'),
-                    'type': 'status',
-                    'channel': self.message_handler.get_current_channel()
+                    'type': 'status'
                 }
                 self.interface.update_messages(status_msg)
-                return True
-            elif cmd == "/channel" and len(parts) > 1:
-                channel = parts[1].lower()
-                success, message = self.message_handler.set_channel(channel)
-                if success:
-                    self.interface.set_channel(channel)
-                status_msg = {
-                    'node': 'System',
-                    'content': message,
-                    'timestamp': time.strftime('%Y-%m-%dT%H:%M:%S'),
-                    'type': 'status',
-                    'channel': self.message_handler.get_current_channel()
-                }
-                self.interface.update_messages(status_msg)
-                return True
-            elif cmd == "/channels":
-                channels_msg = {
-                    'node': 'System',
-                    'content': f"Available channels: {', '.join(AVAILABLE_CHANNELS)}",
-                    'timestamp': time.strftime('%Y-%m-%dT%H:%M:%S'),
-                    'type': 'status',
-                    'channel': self.message_handler.get_current_channel()
-                }
-                self.interface.update_messages(channels_msg)
                 return True
         return False
 
@@ -114,8 +89,7 @@ class LoRaChat:
                                 'node': 'System',
                                 'content': f"Error: {status}",
                                 'timestamp': time.strftime('%Y-%m-%dT%H:%M:%S'),
-                                'type': 'error',
-                                'channel': self.message_handler.get_current_channel()
+                                'type': 'error'
                             })
 
         except KeyboardInterrupt:
