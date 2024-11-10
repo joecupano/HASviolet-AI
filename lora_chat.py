@@ -46,18 +46,47 @@ class LoRaChat:
 
     def process_command(self, command):
         """Process special commands"""
-        if command == "/quit":
-            self.stop()
-            return True
-        elif command == "/status":
-            status_msg = {
-                'node': NODE_ID,
-                'content': f"Radio Status: {'Connected' if self.radio.is_initialized else 'Disconnected'}",
-                'timestamp': time.strftime('%Y-%m-%dT%H:%M:%S'),
-                'type': 'status'
-            }
-            self.interface.update_messages(status_msg)
-            return True
+        if command.startswith("/"):
+            parts = command.split()
+            cmd = parts[0].lower()
+            
+            if cmd == "/quit":
+                self.stop()
+                return True
+            elif cmd == "/status":
+                status_msg = {
+                    'node': NODE_ID,
+                    'content': f"Radio Status: {'Connected' if self.radio.is_initialized else 'Disconnected'}",
+                    'timestamp': time.strftime('%Y-%m-%dT%H:%M:%S'),
+                    'type': 'status',
+                    'channel': self.message_handler.get_current_channel()
+                }
+                self.interface.update_messages(status_msg)
+                return True
+            elif cmd == "/channel" and len(parts) > 1:
+                channel = parts[1].lower()
+                success, message = self.message_handler.set_channel(channel)
+                if success:
+                    self.interface.set_channel(channel)
+                status_msg = {
+                    'node': 'System',
+                    'content': message,
+                    'timestamp': time.strftime('%Y-%m-%dT%H:%M:%S'),
+                    'type': 'status',
+                    'channel': self.message_handler.get_current_channel()
+                }
+                self.interface.update_messages(status_msg)
+                return True
+            elif cmd == "/channels":
+                channels_msg = {
+                    'node': 'System',
+                    'content': f"Available channels: {', '.join(AVAILABLE_CHANNELS)}",
+                    'timestamp': time.strftime('%Y-%m-%dT%H:%M:%S'),
+                    'type': 'status',
+                    'channel': self.message_handler.get_current_channel()
+                }
+                self.interface.update_messages(channels_msg)
+                return True
         return False
 
     def run(self):
@@ -85,7 +114,8 @@ class LoRaChat:
                                 'node': 'System',
                                 'content': f"Error: {status}",
                                 'timestamp': time.strftime('%Y-%m-%dT%H:%M:%S'),
-                                'type': 'error'
+                                'type': 'error',
+                                'channel': self.message_handler.get_current_channel()
                             })
 
         except KeyboardInterrupt:
