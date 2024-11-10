@@ -103,6 +103,7 @@ class LoRaChat:
         self.running = False
         self.interface.stop()
         self.radio.cleanup()
+        self.message_handler.cleanup()  # Clean up database connection
 
 if __name__ == "__main__":
     chat = LoRaChat()

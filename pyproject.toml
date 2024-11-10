@@ -7,4 +7,5 @@ dependencies = [
     "adafruit-blinka>=8.50.0",
     "adafruit-circuitpython-rfm9x>=2.2.17",
     "cryptography>=43.0.3",
+    "psycopg2-binary>=2.9.10",
 ]
