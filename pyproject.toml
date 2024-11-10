@@ -1,0 +1,9 @@
+[project]
+name = "repl-nix-lorachatpi"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.11"
+dependencies = [
+    "adafruit-blinka>=8.50.0",
+    "adafruit-circuitpython-rfm9x>=2.2.17",
+]
