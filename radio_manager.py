@@ -2,13 +2,16 @@
 
 import time
 import random
+import json
 from config import *
+from message_handler import MessageHandler, SHARED_KEY
 
 class LoRaRadio:
     def __init__(self):
         self.is_initialized = False
         self.simulation_mode = True  # For prototype testing without hardware
         self.last_received = time.time()
+        self.message_handler = MessageHandler()  # For encryption in simulation
         
     def initialize(self):
         """Initialize LoRa radio hardware or simulation"""
@@ -49,14 +52,16 @@ class LoRaRadio:
                 # Simulate occasional message reception
                 if current_time - self.last_received > 10 and random.random() < 0.1:
                     self.last_received = current_time
+                    content = f"Test message {random.randint(1, 100)}"
+                    encrypted_content = self.message_handler.encrypt_content(content)
                     simulated_message = {
                         'id': random.randint(1000, 9999),
                         'node': f"SIM_NODE_{random.randint(1,5)}",
-                        'content': f"Test message {random.randint(1, 100)}",
+                        'content': encrypted_content,
                         'timestamp': time.strftime('%Y-%m-%dT%H:%M:%S'),
-                        'type': 'message'
+                        'type': 'message',
+                        'encrypted': True
                     }
-                    import json
                     return True, json.dumps(simulated_message), "Message received"
                 return True, None, "No message"
             return False, None, "Hardware mode not implemented"
